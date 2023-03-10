@@ -12,14 +12,7 @@
 
 This repo contains code that calculates estimators of odds and rate ratios in a simulated case-control study. These estimators needn't be equal, and this simulator allows the magnitude of the disparity to be seen in a simple simulation that uses piecewise constant event rates.
 
-The code has one function that carries out a simulation of a cohort over a user-defined time period. There are two groups: exposed and unexposed. The event of interest occurs at a rate that is piecewise constant, i.e. it is constant for a while, then changes suddenly, is constant again, then changes suddenly, etc.
-
-It can be used to calculate population values of
-- Event rate ratio
-- Event odds ratio in a matched study
-- Event odds ratio in an unmatched study
-
-Here, the event rate is the total number of events over the study, divided by the total number of person years.
+simulator.R has one function that carries out a simulation of a cohort over a user-defined time period. There are two groups: exposed and unexposed. The event of interest occurs at a rate that is piecewise constant, i.e. it is constant for a while, then changes suddenly, is constant again, then changes suddenly, etc.
 
 #### Inputs:
   - **times**:
@@ -53,6 +46,7 @@ A named vector whose components are
 - Event odds ratio in a matched study
 - Event odds ratio in an unmatched study
 
+Here, the event rate is the total number of events over the study, divided by the total number of person years.
 
 ### Funding
 This analysis is part of the Early Assessment of COVID-19 epidemiology and Vaccine/anti-viral Effectiveness (EAVE II) study. EAVE II is funded by the Medical Research Council (MR/R008345/1) with the support of BREATHE - The Health Data Research Hub for Respiratory Health [MC_PC_19004], which is funded through the UK Research and Innovation Industrial Strategy Challenge Fund and delivered through Health Data Research UK. Additional support has been provided through the Scottish Government DG Health and Social Care.  
