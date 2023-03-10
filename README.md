@@ -41,7 +41,7 @@ simulator.R has one function that carries out a simulation of a cohort over a us
       from unexposed to exposed is 0.1 for t = 1-4, and 0.2 for t = 4-5
 
 #### Outputs:
-A named vector whose components are
+A named vector whose components are:
 - Event rate ratio
 - Event odds ratio in a matched study
 - Event odds ratio in an unmatched study
