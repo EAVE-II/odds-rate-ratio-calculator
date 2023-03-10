@@ -1,108 +1,165 @@
+######################################################################
+## Code author: Steven Kerr, steven.kerr@ed.ac.uk
+######################################################################
+
 library(tidyverse)
 
+### Simulator function
 
-times = c(1, 2, 3, 4, 5)
-p_exposed = c(0.2, 0.2, 0.2, 0.2)
-inst_rate_exposed =   c(0.02, 0.02, 0.02, 0.02)/
-inst_rate_unexposed = rep(0.01, 0.04)
-n_start = 1000
+# This function carries out a simulation of a cohort over 
+# a user-defined time period. There are two groups: exposed
+# and unexposed. The event of interest occurs at a rate that 
+# is piecewise constant, i.e. it is constant for a while, then
+# changes suddenly, is constant again, then changes suddenly, etc
+# 
+# It can be used to calculate population values of
+# - Event odds ratio in a matched study
+# - Event odds ratio in an unmatched study
+# - Event rate ratio
+# 
+# Here, the event rate is the total number of events over the
+# study, divided by the total number of person years.
+# 
+# The point is to illustrate how departures from a constant 
+# instantaneous event ratio and constant proportion exposed
+# affect the magnitude of the discrepancy between the above quantities.
+# 
+# Inputs:
+#   - times: 
+#       A numeric vector that defines start and end times
+#       of the time intervals where event rates are constant.
+#       e.g. c(1, 4, 5) specifies a cohort covering two time periods:
+#       t = 1-4, and t = 4-5
+#   - num_chunks: 
+#       This is the discretisation parameter. The simulation involves
+#       numerical integration, and num_chunks is the number of chunks
+#       that each time interval is broken up into. Default is 1,000.
+#   - period_event_rate_exposed:
+#       The event rate in the exposed group over time intervals given 
+#       by times. So if times = c(1, 4, 5), then 
+#       period_event_rate_exposed = c(0.01, 0.02) means the event rate 
+#       in exposed group is 0.01 for t = 1-4, and 0.02 for t = 4-5
+#   - period_event_rate_unexposed:
+#       Similar to period_event_rate_exposed, but for the unexposed
+#   - p_exposed_start:
+#       The proportion of the cohort that is exposed at the start
+#       of the simulation
+#   - period_exposure_rate:
+#       The rate at which unexposed individuals move to the exposed
+#       grou over time intervals given by times. So if times = c(1, 4, 5), 
+#       then period_exposure_rate = c(0.1, 0.2) the rate of movement
+#       from unexposed to exposed is 0.1 for t = 1-4, and 0.2 for t = 4-5
 
-
-calc_OR_RR = function(times, p_exposed, inst_rate_exposed, 
-  inst_rate_unexposed, n_start, OR_matched = NA, OR_unmatched = NA){
-
-
-  df = data.frame( 
-    t_start = times[-length(times)],
-    t_end = times[-1],
+calc_OR_RR = function(times, num_chunks = 1000,
+  period_event_rate_exposed, period_event_rate_unexposed, 
+  p_exposed_start, period_exposure_rate){
+  
+  rate_1 = c()
+  rate_0 = c()
+  exposure_rate = c()
+  
+  for (i in 1:(length(times)-1) ){
+    rate_1 = c(rate_1, rep(period_event_rate_exposed[i], num_chunks))
+    rate_0 = c(rate_0, rep(period_event_rate_unexposed[i], num_chunks))
     
-    p_exposed = p_exposed,
+    exposure_rate = c(exposure_rate, rep(period_exposure_rate[i], num_chunks))
+  }
+  
+  delta_t = 1/num_chunks
+  
+  df = data.frame(
+    t_start = seq(times[1], times[length(times)] - delta_t, by = delta_t),
+
+    rate_1 = rate_1,
+    rate_0 = rate_0,
     
-    inst_rate_exposed =   inst_rate_exposed,
-    inst_rate_unexposed = inst_rate_unexposed,
+    exposure_rate = exposure_rate,
     
-    n = c(n_start, rep(NA, 3)),
+    n = NA,
+    n_0 = NA,
+    n_1 = NA,
     
-    n_event_exposed = NA,
-    n_event_unexposed = NA
+    n_0_event = NA,
+    n_1_event = NA,
+    
+    newly_exposed = NA
   )
   
-  df = df %>%
-    mutate(
-      delta_t = t_end - t_start,
-      
-      p_unexposed = 1 - p_exposed,
-      
-      n_no_event_exposed_begin = p_exposed * n,
-      n_no_event_unexposed_begin = p_unexposed * n,
-      
-      n_no_event_exposed_end = NA,
-      n_no_event_unexposed_end = NA,
-    )
+  df[ , 't_end'] = df[ , 't_start'] + delta_t
   
-  simulation = simulate(df)
-  
-  df = simulation[1]
-  results = simulation[2]
-  
-}
+  df[1, 'n'] = 1
+  df[1, 'p_1'] = p_exposed_start
+  df[1, 'n_0'] = (1 - p_exposed_start) * df[1, 'n']
+  df[1, 'n_1'] = p_exposed_start * df[1, 'n']
 
-
-
-
-simulate = function(df){
-  
+  # Step-by-step simulation starts here
   for (i in 1:nrow(df)){
+    df[i, 'n_0_event'] = df[i, 'rate_0'] * delta_t * df[i, 'n_0']
+    df[i, 'n_1_event'] = df[i, 'rate_1'] * delta_t * df[i, 'n_1']
+
+    df[i, 'newly_exposed'] = df[i, 'exposure_rate'] * delta_t * df[i, 'n_0']
     
-    # The end quantities are related by exponential decay to the begin quantities
-    df[i, 'n_no_event_exposed_end'] = df[i, 'n_no_event_exposed_begin'] * exp( - df[i, 'inst_rate_exposed'] * df[i, 'delta_t'] ) 
-    df[i, 'n_no_event_unexposed_end'] = df[i, 'n_no_event_unexposed_begin'] * exp( - df[i, 'inst_rate_unexposed'] * df[i, 'delta_t']) 
+    if (i < (nrow(df))){
     
-    if (i == nrow(df)){}
-    else {
-      
-      # The total number still susceptible is just the sum of who is left in 
-      # exposed and unexposed groups at the end of previous period
-      df[i+1, 'n'] = df[i, 'n_no_event_exposed_end'] + df[i, 'n_no_event_unexposed_end']
-      
-      # Then, the new number of individuals in the exposed and unexposed groups at the begining of the
-      # next period is determined by p_exposed, p_unexposed in that period
-      df[i+1, 'n_no_event_exposed_begin'] = df[i+1, 'n'] * df[i+1, 'p_exposed']
-      df[i+1, 'n_no_event_unexposed_begin'] = df[i+1, 'n'] * df[i+1, 'p_unexposed']
+      df[i+1, 'n_0'] = df[i, 'n_0'] - df[i, 'n_0_event'] - df[i, 'newly_exposed']
+      df[i+1, 'n_1'] = df[i, 'n_1'] - df[i, 'n_1_event'] + df[i, 'newly_exposed']
     }
-    
   }
   
   df = df %>%
     mutate(
-      # Number of events in each exposure group is equal to number without the
-      # event at the beginning, minus number without the event at the end
-      n_event_exposed = n_no_event_exposed_begin - n_no_event_exposed_end,
-      n_event_unexposed = n_no_event_unexposed_begin - n_no_event_unexposed_end,
+      n = n_0 + n_1,
       
-      a1 = inst_rate_exposed * n_no_event_exposed_begin * exp(-delta_t),
-      a0 = inst_rate_unexposed * n_no_event_unexposed_begin * exp(-delta_t),
-      
-      b0 = (a1 + a0) * (1 - p_exposed),
-      b1 = (a1 + a0) * p_exposed,
-      
-      m10 = p_exposed * inst_rate_exposed * n_no_event_unexposed_begin * (1 - exp(-delta_t)),
-      m01 = p_unexposed * inst_rate_unexposed * n_no_event_exposed_begin * (1 - exp(-delta_t)),
+      p_0 = n_0/n,
+      p_1 = 1 - p_0
     )
   
+  # These are quantities that are used to estimate matched and unmatched
+  # odds ratios. Taken from OR_ij and OR_m on page 549 of the following 
+  # paper:
+  #
+  # https://doi.org/10.1093/oxfordjournals.aje.a113439
+  df = df %>%
+    mutate(
+      a_1 = n_1 * rate_1 * delta_t,
+      a_0 = n_0 * rate_0 * delta_t,
+      
+      b_0 = (a_0 + a_1) * p_0 * delta_t,
+      b_1 = (a_0 + a_1) * p_1 * delta_t,
+      
+      m_10 = a_1 * p_0,
+      m_01 = a_0 * p_1
+    )
   
-    # The number of units of person time spent in each category
-    # is given by the sum of the number of people in each category
-    # at the *beginning* of each time period
-    rate_exposed = sum(df$n_event_exposed) / sum(df$n_no_event_exposed_begin * df$delta_t)
-    rate_unexposed = sum(df$n_event_unexposed) / sum(df$n_no_event_unexposed_begin * df$delta_t)
-    
-    RR = rate_exposed / rate_unexposed
-    
-    OR_matched = sum(df$m10) / sum(df$m01)
-    OR_unmatched = (sum(df$a1) * sum(df$b0)) / (sum(df$a0) * sum(df$b1))
-    
-    return( list(df, c(RR, OR_matched, OR_unmatched)) )
+  # The number of units of person time spent in each category
+  # is given by the sum of the number of people in each category
+  # at the *beginning* of each time period
+  rate_1 = sum(df$n_1_event) / sum(df$n_1 * delta_t)
+  rate_0 = sum(df$n_0_event) / sum(df$n_0 * delta_t)
+  
+  RR = rate_1 / rate_0
+  
+  OR_matched = sum(df$m_10) / sum(df$m_01)
+  OR_unmatched = (sum(df$a_1) * sum(df$b_0)) / (sum(df$a_0) * sum(df$b_1))
+  
+  return(c('Rate ratio' = RR, 'Odds ratio - matched' = OR_matched, 'Odds ratio - unmatched' = OR_unmatched))
 }
 
 
+### Simulation
+
+# Example values
+times = c(1, 2, 3, 4, 5)
+
+delta_t = 0.001
+
+period_event_rate_exposed = c(0.01, 0.02, 0.02, 0.01)
+period_event_rate_unexposed = c(0.01, 0.04, 0.07, 0.03)
+
+p_exposed_start = 0.3
+period_exposure_rate = c(0.1, 0.2, 0.1, 0.2)
+
+
+calc_OR_RR(times, delta_t,
+          period_event_rate_exposed, period_event_rate_unexposed, 
+          p_exposed_start, period_exposure_rate)
