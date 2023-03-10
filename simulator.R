@@ -102,7 +102,6 @@ calc_OR_RR = function(times, num_chunks = 1000,
     df[i, 'newly_exposed'] = df[i, 'exposure_rate'] * delta_t * df[i, 'n_0']
     
     if (i < (nrow(df))){
-    
       df[i+1, 'n_0'] = df[i, 'n_0'] - df[i, 'n_0_event'] - df[i, 'newly_exposed']
       df[i+1, 'n_1'] = df[i, 'n_1'] - df[i, 'n_1_event'] + df[i, 'newly_exposed']
     }
@@ -151,17 +150,30 @@ calc_OR_RR = function(times, num_chunks = 1000,
 ### Simulation
 
 # Example values
-times = c(1, 2, 3, 4, 5)
+times = c(1, 2, 3, 4)
 
-delta_t = 0.001
+period_event_rate_exposed = c(0.01, 0.01, 0.01)
+period_event_rate_unexposed = c(0.0125, 0.02, 0.04)
 
-period_event_rate_exposed = c(0.01, 0.02, 0.02, 0.01)
-period_event_rate_unexposed = c(0.01, 0.04, 0.07, 0.03)
-
-p_exposed_start = 0.3
-period_exposure_rate = c(0.1, 0.2, 0.1, 0.2)
+p_exposed_start = 0.2
+period_exposure_rate = c(0.1, 0.2, 0.1)
 
 calc_OR_RR(
-  times, delta_t,
-  period_event_rate_exposed, period_event_rate_unexposed, 
-  p_exposed_start, period_exposure_rate)
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+# Event rates switched for exposed/unexposed
+period_event_rate_exposed = c(0.0125, 0.02, 0.04)
+period_event_rate_unexposed = c(0.01, 0.01, 0.01)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
