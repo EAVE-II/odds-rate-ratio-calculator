@@ -122,8 +122,8 @@ calc_OR_RR = function(times, num_chunks = 1000,
   # https://doi.org/10.1093/oxfordjournals.aje.a113439
   df = df %>%
     mutate(
-      a_1 = n_1 * rate_1 * delta_t,
-      a_0 = n_0 * rate_0 * delta_t,
+      a_1 = n_1 * rate_1,
+      a_0 = n_0 * rate_0,
       
       b_0 = (a_0 + a_1) * p_0,
       b_1 = (a_0 + a_1) * p_1,
