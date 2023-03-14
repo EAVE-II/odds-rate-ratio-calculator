@@ -125,8 +125,8 @@ calc_OR_RR = function(times, num_chunks = 1000,
       a_1 = n_1 * rate_1 * delta_t,
       a_0 = n_0 * rate_0 * delta_t,
       
-      b_0 = (a_0 + a_1) * p_0 * delta_t,
-      b_1 = (a_0 + a_1) * p_1 * delta_t,
+      b_0 = (a_0 + a_1) * p_0,
+      b_1 = (a_0 + a_1) * p_1,
       
       m_10 = a_1 * p_0,
       m_01 = a_0 * p_1
@@ -156,7 +156,7 @@ period_event_rate_exposed = c(0.01, 0.01, 0.01)
 period_event_rate_unexposed = c(0.0125, 0.02, 0.04)
 
 p_exposed_start = 0.2
-period_exposure_rate = c(0.1, 0.2, 0.1)
+period_exposure_rate = c(0.1, 0.1, 0.1)
 
 calc_OR_RR(
   times = times,
@@ -165,7 +165,20 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
 # Event rates switched for exposed/unexposed
+period_exposure_rate = c(0.1, 0.1, 0.1)
+
 period_event_rate_exposed = c(0.0125, 0.02, 0.04)
 period_event_rate_unexposed = c(0.01, 0.01, 0.01)
 
@@ -175,5 +188,15 @@ calc_OR_RR(
   period_event_rate_unexposed = period_event_rate_unexposed, 
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
 
 
