@@ -10,12 +10,15 @@ library(tidyverse)
 # a user-defined time period. There are two groups: exposed
 # and unexposed. The event of interest occurs at a rate that
 # is piecewise constant, i.e. it is constant for a while, then
-# changes suddenly, is constant again, then changes suddenly, etc
-# 
+# changes suddenly, is constant again, then changes suddenly, etc.
 # 
 # The point is to illustrate how departures from a constant
 # instantaneous event ratio and constant proportion exposed
-# affect the magnitude of the discrepancy between the above quantities.
+# affect the magnitude of the discrepancy between the odds ratios,
+# rate ratios and hazard ratios. If the time intervals are sufficiently 
+# fine-grained, then this can be used to do calculations to any desired
+# degree of accuracy
+# 
 # 
 # Inputs:
 #   - times:
@@ -45,9 +48,9 @@ library(tidyverse)
 #
 # Outputs:
 # A named vector whose elements are:
-#   - Event rate ratio
-#   - Event odds ratio in a matched study
-#   - Event odds ratio in an unmatched study
+#   - Outcome rate ratio
+#   - Outcome odds ratio in a matched study
+#   - Outcome odds ratio in an unmatched study
 # 
 # Here, the event rate is the total number of events over the
 # study, divided by the total number of person years.
@@ -152,10 +155,12 @@ calc_OR_RR = function(times, num_chunks = 1000,
 # Example values
 times = c(1, 2, 3, 4)
 
-period_event_rate_exposed = c(0.01, 0.01, 0.01)
-period_event_rate_unexposed = c(0.0125, 0.02, 0.04)
-
 p_exposed_start = 0.2
+
+# HR = (0.8, 0.4, 0.2)
+period_event_rate_exposed = c(0.01, 0.01, 0.01)
+period_event_rate_unexposed = c(0.0125, 0.025, 0.05)
+
 period_exposure_rate = c(0.1, 0.1, 0.1)
 
 calc_OR_RR(
@@ -175,11 +180,35 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+# HR = (0.4, 0.4, 0.4)
+period_event_rate_exposed = c(0.01, 0.01, 0.01)
+period_event_rate_unexposed = c(0.025, 0.025, 0.025)
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
 
 # Event rates switched for exposed/unexposed
 period_exposure_rate = c(0.1, 0.1, 0.1)
 
-period_event_rate_exposed = c(0.0125, 0.02, 0.04)
+# HR = (1.25, 2.5, 5)
+period_event_rate_exposed = c(0.0125, 0.025, 0.05)
 period_event_rate_unexposed = c(0.01, 0.01, 0.01)
 
 calc_OR_RR(
@@ -198,5 +227,26 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+# HR = (2.5, 2.5, 2.5)
+period_event_rate_exposed = c(0.025, 0.025, 0.025)
+period_event_rate_unexposed = c(0.01, 0.01, 0.01)
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
 
 
