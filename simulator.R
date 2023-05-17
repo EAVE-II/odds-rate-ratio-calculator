@@ -4,8 +4,6 @@
 
 library(tidyverse)
 
-### Simulator function
-
 # This function carries out a simulation of a cohort over
 # a user-defined time period. There are two groups: exposed
 # and unexposed. The event of interest occurs at a rate that
@@ -59,6 +57,7 @@ calc_OR_RR = function(times, num_chunks = 1000,
   period_event_rate_exposed, period_event_rate_unexposed, 
   p_exposed_start, period_exposure_rate){
   
+  # _1 refers to exposed, and _0 refers to unexposed
   rate_1 = c()
   rate_0 = c()
   exposure_rate = c()
@@ -73,7 +72,7 @@ calc_OR_RR = function(times, num_chunks = 1000,
   delta_t = 1/num_chunks
   
   df = data.frame(
-    t_start = seq(times[1], times[length(times)] - delta_t, by = delta_t),
+    t_start = seq(times[0], times[length(times)-1] - delta_t, by = delta_t),
 
     rate_1 = rate_1,
     rate_0 = rate_0,
@@ -123,6 +122,9 @@ calc_OR_RR = function(times, num_chunks = 1000,
   # paper:
   #
   # https://doi.org/10.1093/oxfordjournals.aje.a113439
+  #
+  # Note that I have not multiplied by delta_t, because this factor will
+  # cancel out in the OR_unmatched calculation below
   df = df %>%
     mutate(
       a_1 = n_1 * rate_1,
@@ -165,7 +167,7 @@ period_exposure_rate = c(0.1, 0.1, 0.1)
 
 calc_OR_RR(
   times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_exposed = period_event_rate_exposed, 
   period_event_rate_unexposed = period_event_rate_unexposed, 
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
@@ -194,6 +196,15 @@ period_event_rate_exposed = c(0.01, 0.01, 0.01)
 period_event_rate_unexposed = c(0.025, 0.025, 0.025)
 
 period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+period_exposure_rate = c(0, 0, 0)
 
 calc_OR_RR(
   times = times,
@@ -249,4 +260,12 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
 
