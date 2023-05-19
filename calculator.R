@@ -49,6 +49,7 @@ library(tidyverse)
 #   - Outcome rate ratio
 #   - Outcome odds ratio in a matched study
 #   - Outcome odds ratio in an unmatched study
+#   - Final proportion unexposed
 # 
 # Here, the event rate is the total number of events over the
 # study, divided by the total number of person years.
@@ -72,7 +73,7 @@ calc_OR_RR = function(times, num_chunks = 1000,
   delta_t = 1/num_chunks
   
   df = data.frame(
-    t_start = seq(times[0], times[length(times)-1] - delta_t, by = delta_t),
+    t_start = seq(times[1], times[length(times)] - delta_t, by = delta_t),
 
     rate_1 = rate_1,
     rate_0 = rate_0,
@@ -148,14 +149,21 @@ calc_OR_RR = function(times, num_chunks = 1000,
   OR_matched = sum(df$m_10) / sum(df$m_01)
   OR_unmatched = (sum(df$a_1) * sum(df$b_0)) / (sum(df$a_0) * sum(df$b_1))
   
-  return(c('Rate ratio' = RR, 'Odds ratio - matched' = OR_matched, 'Odds ratio - unmatched' = OR_unmatched))
+  p_0 = df[nrow(df), 'p_0']
+  
+  return(c(
+    'Rate ratio' = RR, 
+    'Odds ratio - matched' = OR_matched, 
+    'Odds ratio - unmatched' = OR_unmatched,
+    'Proportion unexposed end' = p_0)
+    )
 }
 
 
 ### Simulation
 
 # Example values
-times = c(1, 2, 3, 4)
+times = c(0, 1, 2, 3)
 
 p_exposed_start = 0.2
 
@@ -204,6 +212,15 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
 period_exposure_rate = c(0, 0, 0)
 
 calc_OR_RR(
@@ -216,11 +233,11 @@ calc_OR_RR(
 
 
 # Event rates switched for exposed/unexposed
-period_exposure_rate = c(0.1, 0.1, 0.1)
-
 # HR = (1.25, 2.5, 5)
 period_event_rate_exposed = c(0.0125, 0.025, 0.05)
 period_event_rate_unexposed = c(0.01, 0.01, 0.01)
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
 
 calc_OR_RR(
   times = times,
@@ -252,6 +269,15 @@ period_event_rate_exposed = c(0.025, 0.025, 0.025)
 period_event_rate_unexposed = c(0.01, 0.01, 0.01)
 
 period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
 
 calc_OR_RR(
   times = times,
