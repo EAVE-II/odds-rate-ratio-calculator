@@ -167,9 +167,104 @@ times = c(0, 1, 2, 3)
 
 p_exposed_start = 0.2
 
+period_event_rate_unexposed = c(0.025, 0.025, 0.025)
+
+
+# HR = (0.4, 0.4, 0.4)
+period_event_rate_exposed = 0.4 * period_event_rate_unexposed
+
+
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+
+
+# HR = (2.5, 2.5, 2.5)
+period_event_rate_exposed = 2.5 * period_event_rate_unexposed
+
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+
+
+
+
 # HR = (0.8, 0.4, 0.2)
-period_event_rate_exposed = c(0.01, 0.01, 0.01)
-period_event_rate_unexposed = c(0.0125, 0.025, 0.05)
+period_event_rate_exposed = c(0.8, 0.4, 0.2) * period_event_rate_unexposed
+
+
+period_exposure_rate = c(0, 0, 0)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
+
+period_exposure_rate = c(0.1, 0.5, 0.1)
+
+calc_OR_RR(
+  times = times,
+  period_event_rate_exposed =period_event_rate_exposed, 
+  period_event_rate_unexposed = period_event_rate_unexposed, 
+  p_exposed_start = p_exposed_start, 
+  period_exposure_rate = period_exposure_rate)
+
 
 period_exposure_rate = c(0.1, 0.1, 0.1)
 
@@ -181,79 +276,15 @@ calc_OR_RR(
   period_exposure_rate = period_exposure_rate)
 
 
-period_exposure_rate = c(0.1, 0.5, 0.1)
 
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
 
-period_exposure_rate = c(0, 0, 0)
 
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
-
-# HR = (0.4, 0.4, 0.4)
-period_event_rate_exposed = c(0.01, 0.01, 0.01)
-period_event_rate_unexposed = c(0.025, 0.025, 0.025)
-
-period_exposure_rate = c(0.1, 0.1, 0.1)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
-
-period_exposure_rate = c(0.1, 0.5, 0.1)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
-
-period_exposure_rate = c(0, 0, 0)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
 
 
 
 # Event rates switched for exposed/unexposed
 # HR = (1.25, 2.5, 5)
-period_event_rate_exposed = c(0.0125, 0.025, 0.05)
-period_event_rate_unexposed = c(0.01, 0.01, 0.01)
-
-period_exposure_rate = c(0.1, 0.1, 0.1)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
-
-period_exposure_rate = c(0.1, 0.5, 0.1)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
+period_event_rate_exposed = c(1.25, 2.5, 5) * period_event_rate_unexposed
 
 period_exposure_rate = c(0, 0, 0)
 
@@ -264,18 +295,6 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
-# HR = (2.5, 2.5, 2.5)
-period_event_rate_exposed = c(0.025, 0.025, 0.025)
-period_event_rate_unexposed = c(0.01, 0.01, 0.01)
-
-period_exposure_rate = c(0.1, 0.1, 0.1)
-
-calc_OR_RR(
-  times = times,
-  period_event_rate_exposed =period_event_rate_exposed, 
-  period_event_rate_unexposed = period_event_rate_unexposed, 
-  p_exposed_start = p_exposed_start, 
-  period_exposure_rate = period_exposure_rate)
 
 period_exposure_rate = c(0.1, 0.5, 0.1)
 
@@ -286,7 +305,8 @@ calc_OR_RR(
   p_exposed_start = p_exposed_start, 
   period_exposure_rate = period_exposure_rate)
 
-period_exposure_rate = c(0, 0, 0)
+
+period_exposure_rate = c(0.1, 0.1, 0.1)
 
 calc_OR_RR(
   times = times,
