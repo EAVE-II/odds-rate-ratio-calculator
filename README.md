@@ -1,7 +1,5 @@
 # EAVE II Analysis Repository
-## Understanding and reporting
-odds ratios as rate-ratio estimates
-in case-control studies  
+## Understanding and reporting odds ratios as rate-ratio estimates in case-control studies  
 
 ### Paper Details
 >**DOI:** [Insert DOI of paper here]
