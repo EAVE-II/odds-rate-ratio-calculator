@@ -1,12 +1,12 @@
 # EAVE II Analysis Repository
-## [Insert full title here]  
+## Understanding and reporting
+odds ratios as rate-ratio estimates
+in case-control studies  
 
 ### Paper Details
-> **Short title:** [Insert short title of paper here]
->
 >**DOI:** [Insert DOI of paper here]
 >
->**Paper authors:** Steven Kerr, Sander Greenland, Igor Rudan
+>**Paper authors:** Steven Kerr, Sander Greenland, Igor Rudan et al
 
 ### Description
 
